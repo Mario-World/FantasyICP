@@ -1,0 +1,16 @@
+[package]
+name = "backendmain"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fantasy Sports Team"]
+description = "Unified backend for fantasy sports platform"
+license = "MIT"
+
+[dependencies]
+candid = "0.10"
+ic-cdk = "0.17"
+ic-stable-structures = "0.5"
+serde = { version = "1.0", features = ["derive"] }
+
+[lib]
+crate-type = ["cdylib"] 

@@ -1,0 +1,474 @@
+// Unified backend.did
+
+// User Management Types
+type UserProfileResponse = record {
+    success: bool;
+    data: opt UserProfile;
+    error: opt text;
+};
+
+type NotificationResponse = record {
+    success: bool;
+    data: opt Notification;
+    error: opt text;
+};
+
+type NotificationsResponse = record {
+    success: bool;
+    data: opt vec Notification;
+    error: opt text;
+};
+
+type TournamentResponse = record {
+    success: bool;
+    data: opt Tournament;
+    error: opt text;
+};
+
+type TeamsResponse = record {
+    success: bool;
+    data: opt vec Team;
+    error: opt text;
+};
+
+type TeamResponse = record {
+    success: bool;
+    data: opt Team;
+    error: opt text;
+};
+
+type PlayerResponse = record {
+    success: bool;
+    data: opt Player;
+    error: opt text;
+};
+
+type MatchResponse = record {
+    success: bool;
+    data: opt Match;
+    error: opt text;
+};
+
+type MatchScoreResponse = record {
+    success: bool;
+    data: opt MatchScore;
+    error: opt text;
+};
+
+type ContestResponse = record {
+    success: bool;
+    data: opt Contest;
+    error: opt text;
+};
+
+type ContestEntryResponse = record {
+    success: bool;
+    data: opt ContestEntry;
+    error: opt text;
+};
+
+type ContestEntriesResponse = record {
+    success: bool;
+    data: opt vec ContestEntry;
+    error: opt text;
+};
+
+type PlayerScoreResponse = record {
+    success: bool;
+    data: opt PlayerScore;
+    error: opt text;
+};
+
+type ScoringRuleResponse = record {
+    success: bool;
+    data: opt ScoringRule;
+    error: opt text;
+};
+
+type PrizePoolResponse = record {
+    success: bool;
+    data: opt PrizePool;
+    error: opt text;
+};
+
+type UserRewardResponse = record {
+    success: bool;
+    data: opt UserReward;
+    error: opt text;
+};
+
+type UserRewardsResponse = record {
+    success: bool;
+    data: opt vec UserReward;
+    error: opt text;
+};
+
+type RewardTransactionsResponse = record {
+    success: bool;
+    data: opt vec RewardTransaction;
+    error: opt text;
+};
+
+type FantasyTeamResponse = record {
+    success: bool;
+    data: opt FantasyTeam;
+    error: opt text;
+};
+
+type FantasyTeamsResponse = record {
+    success: bool;
+    data: opt vec FantasyTeam;
+    error: opt text;
+};
+
+type UserProfile = record {
+    id: principal;
+    username: text;
+    email: opt text;
+    phone: opt text;
+    kyc_status: KYCStatus;
+    balance: nat64;
+    created_at: nat64;
+    updated_at: nat64;
+};
+
+type KYCStatus = variant {
+    Pending;
+    Verified;
+    Rejected;
+};
+
+type Notification = record {
+    id: text;
+    user_id: principal;
+    title: text;
+    message: text;
+    notification_type: NotificationType;
+    read: bool;
+    created_at: nat64;
+};
+
+type NotificationType = variant {
+    ContestResult;
+    PrizeWon;
+    ContestReminder;
+    SystemUpdate;
+};
+
+// Tournament Types
+type Tournament = record {
+    id: text;
+    name: text;
+    sport: Sport;
+    start_time: nat64;
+    end_time: nat64;
+    status: TournamentStatus;
+    teams: vec Team;
+    matches: vec Match;
+};
+
+type Sport = variant {
+    Cricket;
+    Football;
+    Basketball;
+    Tennis;
+};
+
+type TournamentStatus = variant {
+    Upcoming;
+    Live;
+    Completed;
+    Cancelled;
+};
+
+type Team = record {
+    id: text;
+    name: text;
+    short_name: text;
+    players: vec Player;
+};
+
+type Player = record {
+    id: text;
+    name: text;
+    team_id: text;
+    position: PlayerPosition;
+    points: float64;
+    price: nat64;
+    is_playing: bool;
+};
+
+type PlayerPosition = variant {
+    Batsman;
+    Bowler;
+    AllRounder;
+    WicketKeeper;
+    Forward;
+    Midfielder;
+    Defender;
+    Goalkeeper;
+    PointGuard;
+    ShootingGuard;
+    SmallForward;
+    PowerForward;
+    Center;
+};
+
+type Match = record {
+    id: text;
+    tournament_id: text;
+    team1_id: text;
+    team2_id: text;
+    start_time: nat64;
+    status: MatchStatus;
+    score: opt MatchScore;
+};
+
+type MatchStatus = variant {
+    Scheduled;
+    Live;
+    Completed;
+    Cancelled;
+};
+
+type MatchScore = record {
+    team1_score: text;
+    team2_score: text;
+    team1_overs: opt float64;
+    team2_overs: opt float64;
+};
+
+// Contest Types
+type Contest = record {
+    id: text;
+    name: text;
+    match_id: text;
+    entry_fee: nat64;
+    total_spots: nat32;
+    filled_spots: nat32;
+    prize_pool: nat64;
+    contest_type: ContestType;
+    status: ContestStatus;
+    created_at: nat64;
+    start_time: nat64;
+};
+
+type ContestType = variant {
+    HeadToHead;
+    MultiPlayer;
+    Guaranteed;
+    WinnerTakesAll;
+};
+
+type ContestStatus = variant {
+    Open;
+    Full;
+    Live;
+    Completed;
+    Cancelled;
+};
+
+type ContestEntry = record {
+    id: text;
+    contest_id: text;
+    user_id: principal;
+    team: FantasyTeam;
+    points: float64;
+    rank: opt nat32;
+    prize: opt nat64;
+    created_at: nat64;
+};
+
+type FantasyTeam = record {
+    id: text;
+    name: text;
+    captain_id: text;
+    vice_captain_id: text;
+    players: vec text;
+    total_points: float64;
+    total_price: nat64;
+};
+
+// Scoring Types
+type PlayerScore = record {
+    player_id: text;
+    match_id: text;
+    points: float64;
+    stats: PlayerStats;
+    updated_at: nat64;
+};
+
+type PlayerStats = record {
+    runs: opt nat32;
+    wickets: opt nat32;
+    catches: opt nat32;
+    stumpings: opt nat32;
+    run_outs: opt nat32;
+    overs: opt float64;
+    maidens: opt nat32;
+    economy: opt float64;
+    goals: opt nat32;
+    assists: opt nat32;
+    clean_sheets: opt nat32;
+    saves: opt nat32;
+    yellow_cards: opt nat32;
+    red_cards: opt nat32;
+    points: opt nat32;
+    rebounds: opt nat32;
+    blocks: opt nat32;
+    steals: opt nat32;
+    turnovers: opt nat32;
+};
+
+type ScoringRule = record {
+    action: text;
+    points: float64;
+    sport: Sport;
+};
+
+// Rewards Types
+type PrizePool = record {
+    contest_id: text;
+    total_amount: nat64;
+    distribution: vec PrizeDistribution;
+    distributed: bool;
+};
+
+type PrizeDistribution = record {
+    rank: nat32;
+    percentage: float64;
+    amount: nat64;
+};
+
+type UserReward = record {
+    id: text;
+    user_id: principal;
+    contest_id: text;
+    amount: nat64;
+    rank: nat32;
+    status: RewardStatus;
+    created_at: nat64;
+    claimed_at: opt nat64;
+};
+
+type RewardStatus = variant {
+    Pending;
+    Claimed;
+    Failed;
+};
+
+type RewardTransaction = record {
+    id: text;
+    user_id: principal;
+    amount: nat64;
+    transaction_type: TransactionType;
+    status: TransactionStatus;
+    created_at: nat64;
+    completed_at: opt nat64;
+};
+
+type TransactionType = variant {
+    ContestWin;
+    ContestEntry;
+    Withdrawal;
+    Deposit;
+    Bonus;
+};
+
+type TransactionStatus = variant {
+    Pending;
+    Completed;
+    Failed;
+    Cancelled;
+};
+
+service : {
+    // Initialization
+    "init": () -> ();
+    
+    // User Management
+    "register_user": (text, opt text, opt text) -> (UserProfileResponse);
+    "get_user_profile": (opt principal) -> (UserProfileResponse);
+    "update_user_profile": (opt text, opt text) -> (UserProfileResponse);
+    "update_kyc_status": (principal, KYCStatus) -> (UserProfileResponse);
+    "add_balance": (principal, nat64) -> (UserProfileResponse);
+    "deduct_balance": (principal, nat64) -> (UserProfileResponse);
+    "create_notification": (principal, text, text, NotificationType) -> (NotificationResponse);
+    "get_user_notifications": (opt principal) -> (NotificationsResponse);
+    "mark_notification_read": (text) -> (NotificationResponse);
+    "get_all_users": () -> (vec UserProfile) query;
+    "get_user_count": () -> (nat64) query;
+    
+    // Tournament Management
+    "create_tournament": (text, Sport, nat64, nat64) -> (TournamentResponse);
+    "get_tournament": (text) -> (TournamentResponse);
+    "get_all_tournaments": () -> (vec Tournament) query;
+    "get_tournaments_by_sport": (Sport) -> (vec Tournament) query;
+    "get_live_tournaments": () -> (vec Tournament) query;
+    "update_tournament_status": (text, TournamentStatus) -> (TournamentResponse);
+    "create_team": (text, text) -> (TeamResponse);
+    "get_team": (text) -> (TeamResponse);
+    "get_all_teams": () -> (vec Team) query;
+    "create_player": (text, text, PlayerPosition, nat64) -> (PlayerResponse);
+    "get_player": (text) -> (PlayerResponse);
+    "get_players_by_team": (text) -> (vec Player) query;
+    "get_players_by_position": (PlayerPosition) -> (vec Player) query;
+    "update_player_points": (text, float64) -> (PlayerResponse);
+    "create_match": (text, text, text, nat64) -> (MatchResponse);
+    "get_match": (text) -> (MatchResponse);
+    "get_matches_by_tournament": (text) -> (vec Match) query;
+    "update_match_status": (text, MatchStatus) -> (MatchResponse);
+    "update_match_score": (text, MatchScore) -> (MatchResponse);
+    "add_team_to_tournament": (text, Team) -> (TournamentResponse);
+    "get_tournament_teams": (text) -> (TeamsResponse);
+    "get_tournament_count": () -> (nat64) query;
+    "get_match_count": () -> (nat64) query;
+    "get_live_matches": () -> (vec Match) query;
+    "get_upcoming_matches": () -> (vec Match) query;
+    
+    // Contest Management
+    "create_contest": (text, text, nat64, nat32, nat64, ContestType, nat64) -> (ContestResponse);
+    "get_contest": (text) -> (ContestResponse);
+    "get_contests_by_match": (text) -> (vec Contest) query;
+    "get_open_contests": () -> (vec Contest) query;
+    "join_contest": (text, text) -> (ContestEntryResponse);
+    "get_contest_entries": (text) -> (vec ContestEntry) query;
+    "get_user_contest_entries": (opt principal) -> (ContestEntriesResponse);
+    "update_contest_status": (text, ContestStatus) -> (ContestResponse);
+    "update_entry_points": (text, float64) -> (ContestEntryResponse);
+    "finalize_contest": (text) -> (ContestEntriesResponse);
+    "get_contest_count": () -> (nat64) query;
+    "get_entry_count": () -> (nat64) query;
+    
+    // Scoring Management
+    "update_player_score": (text, text, PlayerStats) -> (PlayerScoreResponse);
+    "get_player_score": (text, text) -> (PlayerScoreResponse);
+    "get_match_scores": (text) -> (vec PlayerScore) query;
+    "update_match_score_data": (text, MatchScore) -> (MatchScoreResponse);
+    "get_match_score": (text) -> (MatchScoreResponse);
+    "add_scoring_rule": (Sport, text, float64) -> (ScoringRuleResponse);
+    "get_scoring_rules": (Sport) -> (vec ScoringRule) query;
+    "calculate_fantasy_team_points": (vec text, text, text, text) -> (float64) query;
+    "get_all_player_scores": () -> (vec PlayerScore) query;
+    "get_score_count": () -> (nat64) query;
+    
+    // Rewards Management
+    "create_prize_pool": (text, nat64, vec PrizeDistribution) -> (PrizePoolResponse);
+    "get_prize_pool": (text) -> (PrizePoolResponse);
+    "distribute_contest_rewards": (text, vec record { principal; nat32; nat64 }) -> (UserRewardsResponse);
+    "claim_reward": (text) -> (UserRewardResponse);
+    "get_user_rewards": (opt principal) -> (UserRewardsResponse);
+    "get_user_transactions": (opt principal) -> (RewardTransactionsResponse);
+    "get_pending_rewards": (opt principal) -> (UserRewardsResponse);
+    "create_bonus_reward": (principal, nat64, text) -> (UserRewardResponse);
+    "get_total_rewards_distributed": () -> (nat64) query;
+    "get_reward_count": () -> (nat64) query;
+    "get_transaction_count": () -> (nat64) query;
+    
+    // Team Management
+    "create_fantasy_team": (text, text, text, vec text) -> (FantasyTeamResponse);
+    "get_user_fantasy_teams": (opt principal) -> (FantasyTeamsResponse);
+    "get_fantasy_team": (text) -> (FantasyTeamResponse);
+    "update_player_playing_status": (text, bool) -> (PlayerResponse);
+    "get_all_players": () -> (vec Player) query;
+};
