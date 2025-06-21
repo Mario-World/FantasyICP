@@ -10,6 +10,9 @@ export default defineConfig(({ mode }) => {
     define: {
       "process.env": env,
     },
+    build: {
+      emptyOutDir: true,
+    },
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

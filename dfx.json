@@ -11,6 +11,16 @@
       "type": "custom",
       "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
     },
+
+    "stake_testnet":{
+          "frontend":{
+              "entrypoint":"frontend/out/index.html"
+          },
+          "source":[
+              "out"
+          ],
+          "type":"assets"
+    },
     "backendmain": {
       "candid": "src/backendmain/backend.did",
       "package": "backendmain",
